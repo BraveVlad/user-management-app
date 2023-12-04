@@ -20,6 +20,27 @@ type CLICommand = {
 
 const commands: CLICommand[] = [
     {
+        text: `help`,
+        callback: (argument) => {
+            console.log(`command argument is ${argument}`);
+            cliCommandsMenu();
+        },
+    },
+    {
+        text: `test`,
+        callback: (argument) => {
+            console.log(`test was detected`);
+            console.log(`command argument is ${argument}`);
+        },
+    },
+    {
+        text: `test`,
+        callback: (argument) => {
+            console.log(`test was detected`);
+            console.log(`command argument is ${argument}`);
+        },
+    },
+    {
         text: `test`,
         callback: (argument) => {
             console.log(`test was detected`);
@@ -44,11 +65,36 @@ const commands: CLICommand[] = [
 
 function cliCommandNotValid(invalidCommand: string) {
     console.log(
-        chalk.red(`Command `),
+        chalk.red(`⚠️  Command `),
         chalk.bgRedBright(chalk.redBright(invalidCommand)),
         chalk.red(` is not a valid command.`)
     );
     console.log(`use`, chalk.blue(`help`), `for commands menu\n\n`);
+}
+
+// function cliPrintCommand(command: CLICommand) {
+//     return `${chalk.blue(command.text)}`;
+// }
+
+function cliClearScreen() {
+    console.clear();
+}
+
+function cliCommandsMenu() {
+    const rgbMax = 255;
+    console.log(chalk.yellow(`Available commands:\n`));
+    for (const i in commands) {
+        const menuChalk = chalk.rgb(rgbMax - (42 * Number(i)), rgbMax - (42 * Number(i)), rgbMax - (42 * Number(i)));
+        const selectedChalk = chalk.yellow;
+
+        if ((Number(process.argv[3])) === Number(i) + 1)
+            console.log(selectedChalk(Number(i) + 1, `)`, `${commands[i].text}`));
+        else console.log(menuChalk(Number(i) + 1, `)`), `${commands[i].text}`);
+    }
+}
+
+function cliGreet() {
+    console.log(chalk.bgCyan(` ${chalk.blue("Vlad's User Management App")}         `));
 }
 
 function handleCLICommand(rawCommand: string) {
@@ -62,7 +108,7 @@ function handleCLICommand(rawCommand: string) {
 
 function validateCLICommand(rawCommand: string): CLICommand {
     const command = findCommand(rawCommand);
-    if (!command) throw new Error(`Command ${rawCommand} is invald`);
+    if (!command) throw new Error(`Command ${rawCommand} is invalid`);
 
     return command;
 }
@@ -72,4 +118,10 @@ function findCommand(command: string): CLICommand | undefined {
 }
 
 
-handleCLICommand(process.argv[2]);
+function main() {
+    cliClearScreen();
+    cliGreet();
+    handleCLICommand(process.argv[2]);
+}
+
+main();
