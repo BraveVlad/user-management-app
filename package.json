@@ -6,8 +6,8 @@
 	"type": "module",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"watch": "npx tsx app.ts vlad egg",
-		"app": "npx tsx app.ts help"
+		"watch": "npx tsx app.ts",
+		"app": "npx tsx app.ts"
 	},
 	"keywords": [],
 	"author": "",

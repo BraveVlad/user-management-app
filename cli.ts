@@ -134,5 +134,5 @@ export function version(version: string) {
     log(chalk.bgYellow, "                                       ")
     log(chalk.bgYellow, "                                       ")
     log(chalk.white, "\nhttps://github.com/BraveVlad/users-crud")
-    log(chalk.red, "\n    https://github.com/BraveVlad")
+    log(chalk.red, "\n    https://github.com/BraveVlad\n")
 }
