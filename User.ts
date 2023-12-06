@@ -1,5 +1,6 @@
 import { randomUUID } from "crypto";
 import { readFile, writeFile } from "./vladio.js";
+import exp from "constants";
 
 const FILEPATH_STORAGE_USERS = 'users.json';
 
@@ -31,7 +32,7 @@ export function addUser(user: User) {
     users.push(user);
 }
 
-export function update(user: User, key: EditableUserKey, value: string) {
+export function update(user: User, key: UserKey, value: UserKeyValues) {
     if (!isKeyOfUser) throw new Error(`${key} is not a key of User`)
 
     user[key] = value;
@@ -39,6 +40,7 @@ export function update(user: User, key: EditableUserKey, value: string) {
     return user;
 }
 
+export type UserKeyValues = string | boolean | number
 export type UserKey = "phonenumber" | "first_name" | "last_name" | "id" | "soft_delete_date" | "soft_deleted";
 export type EditableUserKey = "phonenumber" | "first_name" | "last_name";
 
@@ -62,8 +64,17 @@ export function deleteUserById(id: string) {
 
     if (!user) throw new Error(`Couldnt find user with id ${id} to delete`);
 
-    user.soft_delete_date = Date.now();
-    user.soft_deleted = true;
+    update(user, 'soft_deleted', true);
+    update(user, 'soft_delete_date', Date.now());
+}
+
+export function restoreUserById(id: string) {
+    const user = getUserById(id);
+
+    if (!user) throw new Error(`Couldnt find user with id ${id} to delete`);
+
+    update(user, 'soft_deleted', false);
+    update(user, 'soft_delete_date', -1);
 }
 
 export function getUsers() {
