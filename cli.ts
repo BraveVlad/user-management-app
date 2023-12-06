@@ -42,7 +42,7 @@ export function clearScreen() {
     console.clear();
 }
 
-function cliGreet() {
+export function greet() {
     console.log(
         chalk.bgCyan(` ${chalk.blue("Vlad's User Management App")}         `)
     );
