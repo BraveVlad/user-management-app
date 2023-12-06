@@ -4,6 +4,7 @@ import * as easter from "./easter.js";
 import * as User from "./User.js";
 import chalk from "chalk";
 import { chownSync } from "fs";
+import { userInfo } from "os";
 
 const version = "0.5.0";
 const commands: cli.CLICommand[] = [
@@ -111,14 +112,17 @@ function update(args: cli.ArgumentsList) {
                 } id: ${user.id}\n`
             )
         );
+        list();
+        exit();
     } else {
         cli.log(
             chalk.red,
             chalk.bold(`⚠️  Sorry, you can not change '${args[1]}' of any user \n`)
         );
+        exit()
+        exit();
     }
 
-    list();
 }
 
 function list() {
@@ -134,6 +138,20 @@ function read(args: cli.ArgumentsList) {
 function deleteUser(args: cli.ArgumentsList) {
     const userId = args[0];
     const user = User.getUserById(userId);
+
+    if (userId === "all") {
+
+        User.getUsers().forEach(user => User.deleteUserById(user.id))
+        User.saveUsers()
+        cli.log(
+            chalk.green,
+            chalk.bold(
+                `♻️ ✅ Successfuly deleted ${chalk.bgGreenBright(`all`)} users!
+                \n\n`)
+        );
+        list();
+        exit();
+    }
 
     if (!user) {
         cli.log(
@@ -169,15 +187,23 @@ function deleteUser(args: cli.ArgumentsList) {
 
 function restore(args: cli.ArgumentsList) {
     const userId = args[0];
+
+    if (userId === "all") {
+
+        User.getUsers().forEach(user => User.restoreUserById(user.id))
+        User.saveUsers()
+        cli.log(
+            chalk.green,
+            chalk.bold(
+                `♻️ ✅ Successfuly restored ${chalk.bgGreenBright(`all`)} users!
+                \n\n`)
+        );
+        list();
+        exit();
+    }
     const user = User.getUserById(userId);
 
     if (!user) {
-        cli.log(
-            chalk.red,
-            chalk.bold(
-                `♻️ ⚠️  Sorry, couldn't find user with id '${userId}' to restore \n\n`
-            )
-        );
         list();
         exit();
     }
@@ -197,7 +223,7 @@ function restore(args: cli.ArgumentsList) {
         chalk.green,
         chalk.bold(
             `♻️ ✅ Successfuly restored ${user.first_name + " " + user.last_name} id: ${user.id
-            }\n\n`
+            } \n\n`
         )
     );
 }
