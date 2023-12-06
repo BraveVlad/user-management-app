@@ -5,6 +5,7 @@ import * as easter from "./easter.js";
 import fs from "fs";
 import { colorNames } from "chalk";
 import { create } from "domain";
+import { error } from "console";
 
 const commands: cli.CLICommand[] = [
     {
@@ -47,12 +48,17 @@ const commands: cli.CLICommand[] = [
 
 function readFile(filepath: string) {
     const file = fs.readFileSync(filepath, "utf-8");
-    console.log(file)
+
+    if (!file) throw new Error(`failed to read file ${filepath}`);
+
+    return file;
 }
 
 function writeFile(filepath: string, data: string) {
     fs.writeFileSync(filepath, data);
 }
+
+const FILEPATH_STORAGE_USERS = 'users.json';
 
 type Users = User[];
 type User = {
@@ -78,12 +84,42 @@ function addUser(user: User) {
     users.push(user);
 }
 
+function setUsers(newUsers: Users) {
+    users.splice(0);
+    newUsers.forEach(user => users.push(user));
+}
+
 function getUsers() {
-    return users;
+    return [...users];
+}
+
+function getUserById(users: Users, id: string) {
+    return users.find(user => user.id === id);
+}
+
+function saveUsers(filepath: string, users: Users) {
+    const serializedUsers = JSON.stringify(users);
+
+    writeFile(filepath, serializedUsers)
+}
+
+function loadUsers(filepath: string): Users {
+    try {
+        const file = readFile(filepath);
+        const parsedUsers = JSON.parse(file) as Users;
+
+        if (!parsedUsers) throw new Error(`Unable to parse users from ${filepath}`)
+
+        return parsedUsers;
+
+    } catch {
+        console.log("Failed to read users");
+        throw new Error(`Unable to load users from file ${filepath}`);
+    }
 }
 
 function main() {
-    // cli.clearScreen();
+    cli.clearScreen();
     cli.setCommands(commands);
 
     // const command = cli.handleCLICommand(
@@ -95,26 +131,27 @@ function main() {
     //     }
     // );
 
-    const user1 = newUser({
-        id: "1",
-        first_name: "gilad",
-        last_name: "pinker",
-        phonenumber: "054531"
-    } as User);
+    // const user1 = newUser({
+    //     id: "1",
+    //     first_name: "gilad",
+    //     last_name: "pinker",
+    //     phonenumber: "054531"
+    // } as User);
 
-    const user2 = newUser({
-        id: "1",
-        first_name: "gilad",
-        last_name: "pinker",
-        phonenumber: "054531"
-    } as User);
+    // const user2 = newUser({
+    //     id: "1",
+    //     first_name: "gilad",
+    //     last_name: "pinker",
+    //     phonenumber: "054531"
+    // } as User);
 
-    addUser(user1)
-    addUser(user2)
-    console.log(getUsers());
-    const parsed = JSON.stringify(getUsers());
-    writeFile("users.json", parsed);
-    readFile("users.json");
+    // addUser(user1)
+    // addUser(user2)
+
+    setUsers(loadUsers(FILEPATH_STORAGE_USERS));
+    const user = getUserById(getUsers(), "2");
+    console.log(user);
+
 }
 
 main();
