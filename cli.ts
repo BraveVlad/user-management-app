@@ -1,5 +1,6 @@
 import chalk, { colorNames } from "chalk";
 import { exit } from "process";
+import { User, Users } from "./User.js";
 
 type OnValidCLICommandListener = (argument: ArgumentsList) => void;
 
@@ -12,6 +13,26 @@ export type CLICommand = {
 
 type Commands = CLICommand[];
 const commands: Commands = [];
+
+export function renderUser(user: User) {
+    return `
+█                                      █  
+----------------- ${chalk.yellow(user.id)} --------------------       
+█            ${chalk.red(user.first_name, user.last_name)}              █         
+█           📞 054543                  █`
+}
+
+export function printUsersList(users: Users) {
+    console.log(`
+████████████  Phonebook  ███████████████    
+█                                      █         
+       Total: ${chalk.yellow(users.length)}   Archived: ${chalk.yellow(users.length)}           
+    ${users.map(renderUser).join(``)}
+█                                      █ 
+████████████████████████████████████████ 
+    `);
+
+}
 
 export function setCommands(newCommands: Commands) {
     commands.splice(0);
@@ -44,7 +65,7 @@ export function clearScreen() {
 
 export function greet() {
     console.log(
-        chalk.bgCyan(` ${chalk.blue("Vlad's User Management App")}         `)
+        chalk.bgCyan(` ${chalk.blue("Vlad's User Management App")}         \n`)
     );
 }
 
