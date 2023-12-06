@@ -1,3 +1,4 @@
+import { randomUUID } from "crypto";
 import { readFile, writeFile } from "./vladio.js";
 
 const FILEPATH_STORAGE_USERS = 'users.json';
@@ -22,6 +23,10 @@ export function newUser(newUser: Omit<User, 'soft_delete_date' | 'soft_delete'>)
     } as User;
 }
 
+export function generateId() {
+    return users.length.toString();
+}
+
 export function addUser(user: User) {
     users.push(user);
 }
@@ -31,16 +36,32 @@ export function setUsers(newUsers: Users) {
     newUsers.forEach(user => users.push(user));
 }
 
+export function convertDeletionDate(date: number) {
+    return new Date(date).toUTCString();
+}
+
+export function deleteUserById(id: string) {
+    const user = getUserById(id);
+
+    if (!user) throw new Error(`Couldnt find user with id ${id} to delete`);
+
+    user.soft_delete_date = Date.now();
+    user.soft_deleted = true;
+}
+
 export function getUsers() {
     return [...users];
 }
 
-export function getUserById(users: Users, id: string) {
+export function getDeletedUsers() {
+    return [...users.filter((user) => user.soft_deleted)]
+}
+export function getUserById(id: string) {
     return users.find(user => user.id === id);
 }
 
-export function saveUsers(users: Users) {
-    const serializedUsers = JSON.stringify(users);
+export function saveUsers() {
+    const serializedUsers = JSON.stringify(getUsers());
 
     writeFile(FILEPATH_STORAGE_USERS, serializedUsers)
 }
