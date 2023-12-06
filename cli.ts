@@ -48,7 +48,7 @@ function cliGreet() {
     );
 }
 
-function cliCommandNotValid(invalidCommand: string) {
+export function printCommandInvalid(invalidCommand: string) {
     console.log(
         chalk.red(`⚠️  Command `),
         chalk.bgRedBright(chalk.redBright(invalidCommand)),
@@ -56,19 +56,15 @@ function cliCommandNotValid(invalidCommand: string) {
     );
     console.log(`use`, chalk.blue(`help`), `for commands menu\n\n`);
 }
+type OnValidCommandCallback = (command: CLICommand, args: ArgumentsList) => void;
+type OnInvalidCommandCallback = (command: string, args: ArgumentsList) => void;
 
-export function handleCLICommand(rawCommand: string): {
-    command: CLICommand;
-    arguments: ArgumentsList;
-} {
+export function handleCLICommand(success: OnValidCommandCallback, fail: OnInvalidCommandCallback) {
+    const rawCommand = process.argv[2];
     const command = findCommand(rawCommand);
 
-    if (!command) {
-        cliCommandNotValid(rawCommand);
-        exit();
-    }
-
-    return { command: command, arguments: process.argv.splice(3) };
+    if (!command) fail(rawCommand, process.argv.splice(3));
+    else success(command, process.argv.splice(3));
 }
 
 function findCommand(command: string): CLICommand | undefined {

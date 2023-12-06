@@ -7,7 +7,6 @@
 		"strictNullChecks": true,
 		"noImplicitAny": true,
 		"useUnknownInCatchVariables": true,
-		"esModuleInterop": true,
 		"outDir": "build"
 	},
 	"include": ["./*.ts"]
