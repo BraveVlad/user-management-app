@@ -31,6 +31,23 @@ export function addUser(user: User) {
     users.push(user);
 }
 
+export function update(user: User, key: EditableUserKey, value: string) {
+    if (!isKeyOfUser) throw new Error(`${key} is not a key of User`)
+
+    user[key] = value;
+
+    return user;
+}
+
+export type UserKey = "phonenumber" | "first_name" | "last_name" | "id" | "soft_delete_date" | "soft_deleted";
+export type EditableUserKey = "phonenumber" | "first_name" | "last_name";
+
+export function isKeyOfUser(key: string) {
+    return ["phonenumber", "first_name", "last_name", "id", "soft_delete_date", "soft_deleted"].includes(key) ? key as UserKey : undefined;
+}
+export function isEditableUserKey(key: string) {
+    return ['first_name', 'last_name', 'phonenumber'].includes(key) ? key as EditableUserKey : undefined;
+}
 export function setUsers(newUsers: Users) {
     users.splice(0);
     newUsers.forEach(user => users.push(user));

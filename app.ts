@@ -79,35 +79,19 @@ function update(args: cli.ArgumentsList) {
         cli.log(chalk.red, chalk.bold(`⚠️  Couldn't find user with id ${chalk.underline(searchIndex)}\n\n`))
         exit()
     }
-    // const targetKey = args[1];
-    // console.log(targetKey)
-    // console.log(`is key of user`, isKeyOfUser(targetKey))
-    // console.log(`is key editable`, isUserKeyEditable(targetKey) as boolean)
-    // if (isKeyOfUser(targetKey) && isUserKeyEditable(targetKey)) {
-    //     user[targetKey] = args[2];
-    //     User.saveUsers()
-    // } else {
-    //     cli.log(chalk.red, chalk.bold(`⚠️  Sorry, you can not change '${targetKey}' of any user \n\n`))
-    //     exit()
-    // }
 
-    const key = args[1];
+    const key = User.isEditableUserKey(args[1]);
     const value = args[2];
 
-    if (isEditableUserKey(key)) {
-        user[key as EditableUserKey] = value;
+    if (key) {
+        User.update(user, key, value);
     } else {
         cli.log(chalk.red, chalk.bold(`⚠️  Sorry, you can not change '${key}' of any user \n\n`))
     }
 
     list();
-
 }
-type EditableUserKey = "phonenumber" | "first_name" | "last_name";
 
-function isEditableUserKey(key: string) {
-    return ['first_name', 'last_name', 'phonenumber'].includes(key) ? key as EditableUserKey : undefined;
-}
 
 function list() {
     cli.printUsersList(User.getUsers());
