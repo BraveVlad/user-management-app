@@ -8,4 +8,7 @@ NodeJS User Management app CLI based on NodeJS and files system.
 
 2. npm i
 
-3. npm run app [command] [parameter]
+3. npm run dev [command] [parameter]
+
+# How to use?
+

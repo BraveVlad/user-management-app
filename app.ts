@@ -1,12 +1,8 @@
-import module from "module"
-import url from "url"
 import process from "process";
+import chalk from "chalk";
 import * as cli from "./cli.js";
 import * as easter from "./easter.js";
 import * as User from "./User.js";
-import chalk from "chalk";
-import fs from "fs";
-import os from "os";
 
 const version = "0.5.0";
 const commands: cli.CLICommand[] = [

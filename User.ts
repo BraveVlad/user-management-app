@@ -1,8 +1,4 @@
-import { randomUUID } from "crypto";
 import { readFile, writeFile } from "./vladio.js";
-import exp from "constants";
-import { existsSync } from "fs";
-import { createBrotliCompress } from "zlib";
 
 const FILEPATH_STORAGE_USERS = 'users.json';
 
