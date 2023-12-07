@@ -1,19 +1,15 @@
-import { argv, exit } from "process";
+import module from "module"
+import url from "url"
+import process from "process";
 import * as cli from "./cli.js";
 import * as easter from "./easter.js";
 import * as User from "./User.js";
 import chalk from "chalk";
-import { chownSync } from "fs";
-import { userInfo } from "os";
+import fs from "fs";
+import os from "os";
 
 const version = "0.5.0";
 const commands: cli.CLICommand[] = [
-    {
-        text: `help`,
-        callback: (args) => {
-            cli.printHelpMenu();
-        },
-    },
     {
         text: `help`,
         callback: (args) => {
@@ -95,7 +91,7 @@ function update(args: cli.ArgumentsList) {
                 `⚠️  Couldn't find user with id ${chalk.underline(searchIndex)}\n`
             )
         );
-        exit();
+        process.exit();
     }
 
     const key = User.isEditableUserKey(args[1]);
@@ -113,14 +109,13 @@ function update(args: cli.ArgumentsList) {
             )
         );
         list();
-        exit();
+        process.exit();
     } else {
         cli.log(
             chalk.red,
             chalk.bold(`⚠️  Sorry, you can not change '${args[1]}' of any user \n`)
         );
-        exit()
-        exit();
+        process.exit();
     }
 
 }
@@ -150,7 +145,7 @@ function deleteUser(args: cli.ArgumentsList) {
                 \n\n`)
         );
         list();
-        exit();
+        process.exit();
     }
 
     if (!user) {
@@ -161,7 +156,7 @@ function deleteUser(args: cli.ArgumentsList) {
             )
         );
         list();
-        exit();
+        process.exit();
     }
 
     if (user.soft_deleted) {
@@ -170,7 +165,7 @@ function deleteUser(args: cli.ArgumentsList) {
             chalk.bold(`🗑️ ✅ User id '${userId}' is already deleted`)
         );
         list();
-        exit();
+        process.exit();
     }
 
     User.deleteUserById(userId);
@@ -199,13 +194,13 @@ function restore(args: cli.ArgumentsList) {
                 \n\n`)
         );
         list();
-        exit();
+        process.exit();
     }
     const user = User.getUserById(userId);
 
     if (!user) {
         list();
-        exit();
+        process.exit();
     }
 
     if (!user.soft_deleted) {
@@ -214,7 +209,7 @@ function restore(args: cli.ArgumentsList) {
             chalk.bold(`♻️ ✅ User id '${userId}' is already active`)
         );
         list();
-        exit();
+        process.exit();
     }
 
     User.restoreUserById(userId);
